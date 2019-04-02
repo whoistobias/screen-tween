@@ -1,0 +1,22 @@
+{
+  "name": "screen-tween",
+  "version": "1.0.3",
+  "description": "Tween value based on scroll amount.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/whoistobias/vault/tree/master/screen-tween"
+  },
+  "keywords": [
+    "tween",
+    "screen",
+    "animation",
+    "scroll",
+    "ease"
+  ],
+  "author": "Tobias Lasco",
+  "license": "MIT"
+}
