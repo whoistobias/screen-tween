@@ -1,6 +1,6 @@
 {
   "name": "screen-tween",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Tween value based on scroll amount.",
   "main": "index.js",
   "scripts": {
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/whoistobias/vault/tree/master/screen-tween"
+    "url": "https://github.com/whoistobias/screen-tween.git"
   },
   "keywords": [
     "tween",
