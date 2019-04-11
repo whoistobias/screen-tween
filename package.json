@@ -1,6 +1,6 @@
 {
   "name": "screen-tween",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Tween value based on scroll amount.",
   "main": "index.js",
   "scripts": {

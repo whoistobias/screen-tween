@@ -3,18 +3,24 @@ interface Params {
     target: any;
     property: string;
     throttleAmount?: number;
-    duration?: number;
+    speed?: number;
+    element?: HTMLElement;
 }
 export default class ScreenTween {
     currentValue: number;
-    params: Params;
-    speed: number;
     tweening: boolean;
     throttled: any;
+    scrollDistance: number;
+    target: any;
+    property: string;
+    throttleAmount: number;
+    speed: number;
+    element: HTMLElement;
     constructor(params: Params);
-    easeOutQuint: (t: number) => number;
+    stop(): void;
     start(): void;
-    private stop;
+    private continue;
+    private wait;
     private tween;
     private throttle;
 }
