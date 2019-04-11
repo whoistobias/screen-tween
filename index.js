@@ -1,3 +1,4 @@
+// the purpose is to tween a value between 0 and 1 based on scroll with smooth transition & throttling.
 (function (factory) {
     if (typeof module === "object" && typeof module.exports === "object") {
         var v = factory(require, exports);
@@ -12,97 +13,56 @@
     var ScreenTween = /** @class */ (function () {
         function ScreenTween(params) {
             this.currentValue = 0;
+            this.speed = .001;
             this.tweening = false;
             this.throttled = null;
-            try {
-                if (!params.target)
-                    throw new Error('You must specify the target object to change data in.');
-                if (typeof params.target !== 'object')
-                    throw new Error('The target object must be specified as a reference to the object.');
-                if (!params.property)
-                    throw new Error('You must specify the target property to change.');
-                if (typeof params.property !== 'string')
-                    throw new Error('The target property must be specified as a string.');
-                if (params.speed && params.speed <= 0 || params.speed && params.speed >= 10)
-                    throw new Error('Speed must be a value between 0 & 10.');
-            }
-            catch (err) {
-                console.error(err);
-            }
-            this.scrollDistance = params.scrollDistance || 2000;
-            this.target = params.target;
-            this.property = params.property;
-            this.throttleAmount = params.throttleAmount || 100;
-            this.speed = (params.speed || 1) * .0001;
-            this.element = params.element || document.documentElement;
-            this.throttled = this.throttle(this.continue.bind(this), this.throttleAmount);
-            if (this.element === document.documentElement) {
-                document.addEventListener('scroll', this.throttled);
-            }
-            else {
-                this.element.addEventListener('scroll', this.throttled);
-            }
+            this.easeOutQuint = function (t) { return 1 + (--t) * t * t * t * t; };
+            this.params = {
+                scrollDistance: params.scrollDistance || 2000,
+                target: params.target,
+                property: params.property,
+                throttleAmount: params.throttleAmount || 200,
+                duration: params.duration || 5000,
+            };
+            this.throttled = this.throttle(this.start.bind(this), 200);
+            // console.log('initial start')
+            document.addEventListener('scroll', this.throttled);
         }
-        ScreenTween.prototype.stop = function () {
-            this.tweening = false;
-            if (this.element === document.documentElement) {
-                document.removeEventListener('scroll', this.throttled);
-            }
-            else {
-                this.element.removeEventListener('scroll', this.throttled);
-            }
-        };
+        // unEaseOutQuint = (p: number) => { }
         ScreenTween.prototype.start = function () {
-            var percentScrolled = this.element.scrollTop / this.scrollDistance;
-            if (percentScrolled > 0 && percentScrolled < 1) {
-                this.continue();
-            }
-            else {
-                if (this.element === document.documentElement) {
-                    document.addEventListener('scroll', this.throttled);
-                }
-                else {
-                    this.element.addEventListener('scroll', this.throttled);
-                }
-            }
-        };
-        ScreenTween.prototype.continue = function () {
-            var percentScrolled = this.element.scrollTop / this.scrollDistance;
+            var percentScrolled = document.documentElement.scrollTop / this.params.scrollDistance;
             if (percentScrolled > 0 && percentScrolled < 1) {
                 this.tweening = true;
-                if (this.element === document.documentElement) {
-                    document.removeEventListener('scroll', this.throttled);
-                }
-                else {
-                    this.element.removeEventListener('scroll', this.throttled);
-                }
+                // console.log('starting')
+                document.removeEventListener('scroll', this.throttled);
                 window.requestAnimationFrame(this.tween.bind(this));
             }
         };
-        ScreenTween.prototype.wait = function () {
+        ScreenTween.prototype.stop = function () {
             this.tweening = false;
+            // console.log('stopping')
             document.addEventListener('scroll', this.throttled);
         };
         ScreenTween.prototype.tween = function () {
-            if (!this.tweening)
-                return;
-            var percentScrolled = this.element.scrollTop / this.scrollDistance;
+            var percentScrolled = document.documentElement.scrollTop / this.params.scrollDistance; // new
             if (percentScrolled > 1)
                 percentScrolled = 1;
-            var percentChanged = percentScrolled - this.currentValue;
+            var percentChanged = percentScrolled - this.currentValue; // distance
             if (percentChanged === 0)
-                return this.wait();
+                return this.stop();
+            var newValue;
             if (Math.abs(percentChanged) > this.speed) {
-                var newValue = (percentChanged * (this.speed * 1000)) + (percentChanged < 0 ? -this.speed : percentChanged > 0 ? this.speed : 0);
+                newValue = (percentChanged * .1) + (percentChanged < 0 ? -this.speed : percentChanged > 0 ? this.speed : 0);
                 this.currentValue += newValue;
-                this.target[this.property] = this.currentValue;
+                this.params.target[this.params.property] = this.currentValue;
             }
             else {
                 this.currentValue = percentScrolled;
-                this.target[this.property] = this.currentValue;
+                this.params.target[this.params.property] = this.currentValue;
             }
+            // console.log(this.currentValue)
             if (this.currentValue <= 0 || this.currentValue >= 1)
-                return this.wait();
+                return this.stop();
             window.requestAnimationFrame(this.tween.bind(this));
         };
         ScreenTween.prototype.throttle = function (fn, delay) {
@@ -113,8 +73,9 @@
                     args[_i] = arguments[_i];
                 }
                 var now = (new Date).getTime();
-                if (now - lastCall < delay)
+                if (now - lastCall < delay) {
                     return;
+                }
                 lastCall = now;
                 return fn.apply(void 0, args);
             };
