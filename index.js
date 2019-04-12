@@ -9,8 +9,8 @@
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    var ScreenTween = /** @class */ (function () {
-        function ScreenTween(params) {
+    class ScreenTween {
+        constructor(params) {
             this.currentValue = 0;
             this.tweening = false;
             this.throttled = null;
@@ -43,7 +43,7 @@
                 this.element.addEventListener('scroll', this.throttled);
             }
         }
-        ScreenTween.prototype.stop = function () {
+        stop() {
             this.tweening = false;
             if (this.element === document.documentElement) {
                 document.removeEventListener('scroll', this.throttled);
@@ -51,9 +51,9 @@
             else {
                 this.element.removeEventListener('scroll', this.throttled);
             }
-        };
-        ScreenTween.prototype.start = function () {
-            var percentScrolled = this.element.scrollTop / this.scrollDistance;
+        }
+        start() {
+            const percentScrolled = this.element.scrollTop / this.scrollDistance;
             if (percentScrolled > 0 && percentScrolled < 1 || percentScrolled !== this.currentValue) {
                 this.continue();
             }
@@ -65,9 +65,9 @@
                     this.element.addEventListener('scroll', this.throttled);
                 }
             }
-        };
-        ScreenTween.prototype.continue = function () {
-            var percentScrolled = this.element.scrollTop / this.scrollDistance;
+        }
+        continue() {
+            const percentScrolled = this.element.scrollTop / this.scrollDistance;
             if (percentScrolled > 0 && percentScrolled < 1 || percentScrolled !== this.currentValue) {
                 this.tweening = true;
                 if (this.element === document.documentElement) {
@@ -78,22 +78,22 @@
                 }
                 window.requestAnimationFrame(this.tween.bind(this));
             }
-        };
-        ScreenTween.prototype.wait = function () {
+        }
+        wait() {
             this.tweening = false;
             document.addEventListener('scroll', this.throttled);
-        };
-        ScreenTween.prototype.tween = function () {
+        }
+        tween() {
             if (!this.tweening)
                 return;
-            var percentScrolled = this.element.scrollTop / this.scrollDistance;
+            let percentScrolled = this.element.scrollTop / this.scrollDistance;
             if (percentScrolled > 1)
                 percentScrolled = 1;
-            var percentChanged = percentScrolled - this.currentValue;
+            const percentChanged = percentScrolled - this.currentValue;
             if (percentChanged === 0)
                 return this.wait();
             if (Math.abs(percentChanged) > this.speed) {
-                var newValue = (percentChanged * (this.speed * 1000)) + (percentChanged < 0 ? -this.speed : percentChanged > 0 ? this.speed : 0);
+                const newValue = (percentChanged * (this.speed * 1000)) + (percentChanged < 0 ? -this.speed : percentChanged > 0 ? this.speed : 0);
                 this.currentValue += newValue;
                 this.target[this.property] = this.currentValue;
             }
@@ -104,22 +104,17 @@
             if (this.currentValue <= 0 || this.currentValue >= 1)
                 return this.wait();
             window.requestAnimationFrame(this.tween.bind(this));
-        };
-        ScreenTween.prototype.throttle = function (fn, delay) {
-            var lastCall = 0;
-            return function () {
-                var args = [];
-                for (var _i = 0; _i < arguments.length; _i++) {
-                    args[_i] = arguments[_i];
-                }
-                var now = (new Date).getTime();
+        }
+        throttle(fn, delay) {
+            let lastCall = 0;
+            return (...args) => {
+                const now = (new Date).getTime();
                 if (now - lastCall < delay)
                     return;
                 lastCall = now;
-                return fn.apply(void 0, args);
+                return fn(...args);
             };
-        };
-        return ScreenTween;
-    }());
+        }
+    }
     exports.default = ScreenTween;
 });
