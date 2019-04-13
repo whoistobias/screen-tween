@@ -18,14 +18,14 @@ class ScreenTween {
         catch (err) {
             console.error(err);
         }
-        this.scrollDistance = params.scrollDistance || 2000;
+        this.distance = params.distance || 2000;
         this.target = params.target;
         this.property = params.property;
-        this.throttleAmount = params.throttleAmount || 100;
+        this.throttle = params.throttle || 100;
         this.speed = (params.speed || 1) * .0001;
         this.element = params.element || document.documentElement;
         this.callback = params.callback || null;
-        this.throttled = this.throttle(this.continue.bind(this), this.throttleAmount);
+        this.throttled = this.throttler(this.continue.bind(this), this.throttle);
         if (this.element === document.documentElement) {
             document.addEventListener('scroll', this.throttled);
         }
@@ -43,7 +43,7 @@ class ScreenTween {
         }
     }
     start() {
-        const percentScrolled = this.element.scrollTop / this.scrollDistance;
+        const percentScrolled = this.element.scrollTop / this.distance;
         if (percentScrolled > 0 && percentScrolled < 1 || percentScrolled !== this.value) {
             this.continue();
         }
@@ -57,7 +57,7 @@ class ScreenTween {
         }
     }
     continue() {
-        const percentScrolled = this.element.scrollTop / this.scrollDistance;
+        const percentScrolled = this.element.scrollTop / this.distance;
         if (percentScrolled > 0 && percentScrolled < 1 || percentScrolled !== this.value) {
             this.tweening = true;
             if (this.element === document.documentElement) {
@@ -76,7 +76,7 @@ class ScreenTween {
     tween() {
         if (!this.tweening)
             return;
-        let percentScrolled = this.element.scrollTop / this.scrollDistance;
+        let percentScrolled = this.element.scrollTop / this.distance;
         if (percentScrolled > 1)
             percentScrolled = 1;
         const percentChanged = percentScrolled - this.value;
@@ -102,7 +102,7 @@ class ScreenTween {
             return this.wait();
         window.requestAnimationFrame(this.tween.bind(this));
     }
-    throttle(fn, delay) {
+    throttler(fn, delay) {
         let lastCall = 0;
         return (...args) => {
             const now = (new Date).getTime();
