@@ -1,42 +1,81 @@
 # Screen Tween!
-Have you ever thought "I wish there was an easy way to implement constant easing with the scroll bar."? Well oh boy, let me tell you, now you can!
 
-Screen Tween is a tiny little javascript class that allows you to tween a value based on the scroll bar.
+Have you ever thought “I wish there was an easy way to implement easing with scroll? Screen Tween is a tiny little javascript class that allows you to ease a value based on the scroll bar.
+
+Select an element, pass a reference to screen tween, and it will produce a constant easing value between 0 and 1 representing the percent the user has scrolled to a specified distance.
+
+I know that's confusing to read. Check out the example [here](https://whoistobias.me/vault/screen-tween/)!
 
 ## Features
-Select the element, and point screen tween to a data value and it will produce a number between 0 and 1 that is the percent of a specified distance it is, but the output number is automatically eased.
 
-Screen Tween automatically adds and removes event listeners when the animation isn't running to improve performance. It's also automatically throttled to prevent over-using scroll listeners.
-
-You can attach the tween to any vertically scrolling HTML Element and it'll do the rest.
+- Screen Tween automatically adds and removes event listeners when the animation isn’t running to improve performance.
+- It’s also automatically throttled to prevent over-using scroll listeners.
+- You can specify the throttle amount.
+- You can attach the tween to any vertically scrolling HTML Element.
+- You can stop and start the number output.
+- You can pass a function into the config object that is called each frame of the tween.
 
 ## Usage
+
 Simply instantiate a new tween and pass it an options object.
 ```
 tween = new ScreenTween({
-    scrollDistance: 2000,
+    distance: 2000,
     target: this,
     property: 'scrollAmount',
-    throttleAmount: 200,
-    speed: 2
+    throttle: 200,
+    speed: 1,
+    callback: currentValue => console.log(currentValue)
 })
 ```
-Tweening can also be stopped and restarted
+Tweening can be stopped and restarted, and the current value can be accessed.
 ```
-tween.stop()
-
-tween.start()
+if (someCondition) {
+    tween.stop()
+} else if (someOtherCondition) {
+    tween.start()
+} else {
+    console.log(tween.value)
+}
 ```
-
-
 ## Options
-These are the default values for the options object.
 
-| Parameter | Default |
-| ------ | ------ |
-| scrollDistance | 2000 |
-| target | |
-| property | |
-| throttleAmount | 100 |
-| speed | 1 |
-| element | document.documentElement |
+These are the default values and required types for the options object.
+
+| Parameter | Default | Type |
+| ------ | ------ | ------ |
+| `callback` | `null` | Function |
+| `element` | `document.documentElement` | HTMLElement |
+| `property` | | string |
+| `distance` | `2000` | number |
+| `speed` | `1` | number |
+| `target` | | Object |
+| `throttle` | `100` | number |
+
+### callback
+
+The function that will be called each frame of the tween. Screen tween automatically passes the current value as an argument to the function.
+
+### element
+
+The element to measure the scroll value of. If left empty, it defaults to the entire document.
+
+### property
+
+A string representing the key of the property in the element to be changed.
+
+### distance
+
+The distance scrolled that the value is calculated from. If the user has scrolled this distance from the top of the element, the value will be 1.
+
+### speed
+
+A number between 0 and 10 representing the relative speed of the tween effect. 1 is considered "normal speed." .5 is half as fast, 2 is twice as fast.
+
+### target
+
+The reference to the object containing the property to be changed during the tween.
+
+### throttle
+
+The number of milliseconds to throttle the scroll event listener to.

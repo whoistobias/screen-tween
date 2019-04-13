@@ -5,9 +5,10 @@ interface Params {
     throttleAmount?: number;
     speed?: number;
     element?: HTMLElement;
+    callback?: ((value: number) => any) | null;
 }
 export default class ScreenTween {
-    currentValue: number;
+    value: number;
     tweening: boolean;
     throttled: any;
     scrollDistance: number;
@@ -16,6 +17,7 @@ export default class ScreenTween {
     throttleAmount: number;
     speed: number;
     element: HTMLElement;
+    callback: ((value: number) => any) | null;
     constructor(params: Params);
     stop(): void;
     start(): void;
