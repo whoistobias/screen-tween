@@ -47,7 +47,7 @@ These are the default values and required types for the options object.
 | `callback` | `null` | Function |
 | `element` | `document.documentElement` | HTMLElement |
 | `property` | | string |
-| `distance` | `2000` | number |
+| `distance` | Element Height | number |
 | `speed` | `1` | number |
 | `target` | | Object |
 | `throttle` | `100` | number |
