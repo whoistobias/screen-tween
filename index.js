@@ -18,13 +18,13 @@ class ScreenTween {
         catch (err) {
             console.error(err);
         }
-        this.distance = params.distance || 2000;
         this.target = params.target;
         this.property = params.property;
         this.throttle = params.throttle || 100;
         this.speed = (params.speed || 1) * .0001;
         this.element = params.element || document.documentElement;
         this.callback = params.callback || null;
+        this.distance = params.distance || this.element.scrollHeight - this.element.clientHeight;
         this.throttled = this.throttler(this.continue.bind(this), this.throttle);
         if (this.element === document.documentElement) {
             document.addEventListener('scroll', this.throttled);
